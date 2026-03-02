@@ -149,22 +149,22 @@ st.markdown("""
         h2 > span:first-child {
             font-size: 2.2rem !important;
         }
-        h2 > span:last-child {
-            font-size: 1.2rem !important;
-        }
-        
-        /* 氏と名を縦に並ばせず、強制的に横1列（1行）に並べる最強のCSS */
+    }
+    
+    /* スマホ画面（幅が576px以下）設定の場合のみ、氏名を横並びに強制 */
+    @media (max-width: 576px) {
+        /* スマホ向けに作成したカスタムクラス直下のHorizontalBlockのレイアウトを横並びに固定 */
         div.element-container:has(span.name-columns-wrapper) + div[data-testid="stHorizontalBlock"] {
-            display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             gap: 10px !important;
         }
+        /* 子要素のカラム幅を強制的に50%に固定 */
         div.element-container:has(span.name-columns-wrapper) + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-            width: 50% !important;
-            min-width: calc(50% - 10px) !important;
-            max-width: 50% !important;
-            flex: 1 1 calc(50% - 10px) !important;
+            width: calc(50% - 5px) !important;
+            min-width: calc(50% - 5px) !important;
+            max-width: calc(50% - 5px) !important;
+            flex: 1 1 calc(50% - 5px) !important;
         }
     }
 </style>
@@ -215,7 +215,7 @@ def input_page():
         req_span = "<span class='req-mark'>(必須)</span>"
         
         with col1:
-            st.markdown('<span class="name-columns-wrapper"></span>', unsafe_allow_html=True)
+            st.markdown('<span class="name-columns-wrapper" style="display:none;"></span>', unsafe_allow_html=True)
             subcol1, subcol2 = st.columns(2)
             with subcol1:
                 last_name = st.text_input("氏")
