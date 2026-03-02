@@ -137,6 +137,22 @@ st.markdown("""
         font-weight: bold !important;
         margin-left: 4px;
     }
+    
+    /* スマホ画面（幅が768px以下）用のレスポンシブデザイン調整 */
+    @media (max-width: 768px) {
+        /* 質問項目（Q1など）のラベル文字をスマホ用に少し小さくする（2行程度に収めるため） */
+        div[data-testid="stRadio"] > label p {
+            font-size: 1.05rem !important;
+        }
+        
+        /* タイトルの文字サイズもスマホに合わせて調整 */
+        h2 > span:first-child {
+            font-size: 2.2rem !important;
+        }
+        h2 > span:last-child {
+            font-size: 1.2rem !important;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
