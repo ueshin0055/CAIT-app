@@ -153,16 +153,18 @@ st.markdown("""
             font-size: 1.2rem !important;
         }
         
-        /* 氏と名を縦に並ばせず、強制的に横1列（1行）に並べる */
+        /* 氏と名を縦に並ばせず、強制的に横1列（1行）に並べる最強のCSS */
         div.element-container:has(span.name-columns-wrapper) + div[data-testid="stHorizontalBlock"] {
+            display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
-            gap: 15px !important;
+            gap: 10px !important;
         }
         div.element-container:has(span.name-columns-wrapper) + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
             width: 50% !important;
-            min-width: 50% !important;
-            flex: 1 1 50% !important;
+            min-width: calc(50% - 10px) !important;
+            max-width: 50% !important;
+            flex: 1 1 calc(50% - 10px) !important;
         }
     }
 </style>
