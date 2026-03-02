@@ -146,26 +146,22 @@ st.markdown("""
         }
         
         /* タイトルの文字サイズもスマホに合わせて調整 */
-        h2 > span:first-child {
-            font-size: 2.2rem !important;
+        h2 > span:last-child {
+            font-size: 1.2rem !important;
         }
     }
     
-    /* スマホ画面（幅が576px以下）設定の場合のみ、氏名を横並びに強制 */
-    @media (max-width: 576px) {
-        /* スマホ向けに作成したカスタムクラス直下のHorizontalBlockのレイアウトを横並びに固定 */
-        div.element-container:has(span.name-columns-wrapper) + div[data-testid="stHorizontalBlock"] {
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            gap: 10px !important;
-        }
-        /* 子要素のカラム幅を強制的に50%に固定 */
-        div.element-container:has(span.name-columns-wrapper) + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-            width: calc(50% - 5px) !important;
-            min-width: calc(50% - 5px) !important;
-            max-width: calc(50% - 5px) !important;
-            flex: 1 1 calc(50% - 5px) !important;
-        }
+    /* 氏・名を横並びにするための安全なCSSクラス設定（スマホ・PC共通） */
+    .name-input-container > div > div[data-testid="stHorizontalBlock"] {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 15px !important;
+    }
+    .name-input-container > div > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        width: 50% !important;
+        min-width: calc(50% - 15px) !important;
+        flex: 1 1 0% !important;
+        display: block !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -215,7 +211,7 @@ def input_page():
         req_span = "<span class='req-mark'>(必須)</span>"
         
         with col1:
-            st.markdown('<span class="name-columns-wrapper" style="display:none;"></span>', unsafe_allow_html=True)
+            st.markdown('<div class="name-input-container">', unsafe_allow_html=True)
             subcol1, subcol2 = st.columns(2)
             with subcol1:
                 last_name = st.text_input("氏")
@@ -223,6 +219,8 @@ def input_page():
             with subcol2:
                 first_name = st.text_input("名")
                 st.markdown(f"<style>div[data-testid='stTextInput']:nth-of-type(2) label p::after {{ content: ' (必須)'; color: #D32F2F; font-size: 0.8rem; font-weight: bold; }}</style>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+            
             category = st.selectbox("カテゴリー", ["U18", "U15宜野湾", "U15那覇"], index=None, placeholder="選択してください")
             st.markdown(f"<style>div[data-testid='stSelectbox']:nth-of-type(1) label p::after {{ content: ' (必須)'; color: #D32F2F; font-size: 0.8rem; font-weight: bold; }}</style>", unsafe_allow_html=True)
         with col2:
