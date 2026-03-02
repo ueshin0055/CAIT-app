@@ -152,6 +152,16 @@ st.markdown("""
         h2 > span:last-child {
             font-size: 1.2rem !important;
         }
+        
+        /* 氏と名を縦に並ばせず、横1列（1行）に並べる */
+        div.element-container:has(span.name-columns-wrapper) + div.element-container > div[data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            gap: 10px !important;
+        }
+        div.element-container:has(span.name-columns-wrapper) + div.element-container > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+            width: calc(50% - 5px) !important;
+            min-width: calc(50% - 5px) !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -201,6 +211,7 @@ def input_page():
         req_span = "<span class='req-mark'>(必須)</span>"
         
         with col1:
+            st.markdown('<span class="name-columns-wrapper"></span>', unsafe_allow_html=True)
             subcol1, subcol2 = st.columns(2)
             with subcol1:
                 last_name = st.text_input("氏")
