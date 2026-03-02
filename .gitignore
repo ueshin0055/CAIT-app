@@ -1,0 +1,31 @@
+# Streamlit secrets (VERY IMPORTANT to not commit this!)
+.streamlit/secrets.toml
+# You can commit .streamlit/config.toml if you want to enforce theme settings like light mode, 
+# but never commit secrets.toml which contains your Google Cloud credentials.
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and OS specific files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Other temp files
+*.log
+*.sqlite3
+.pytest_cache/
+.coverage
+htmlcov/
