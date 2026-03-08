@@ -13,7 +13,12 @@ APP_TITLE = "サッカーチーム 選手データ管理"
 MAX_SLOTS = 50
 
 try:
-    ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
+    if "ADMIN_PASSWORD" in st.secrets:
+        ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
+    elif "connections" in st.secrets and "gsheets" in st.secrets["connections"] and "ADMIN_PASSWORD" in st.secrets["connections"]["gsheets"]:
+        ADMIN_PASSWORD = st.secrets["connections"]["gsheets"]["ADMIN_PASSWORD"]
+    else:
+        ADMIN_PASSWORD = "admin"
 except Exception:
     ADMIN_PASSWORD = "admin" # デフォルトパスワード（実運用時に変更）
 
