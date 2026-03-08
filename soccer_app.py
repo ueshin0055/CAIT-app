@@ -323,6 +323,46 @@ def admin_page():
         st.markdown("### 📋 選手スロット管理 (全50枠)")
         st.info("選手名を登録すると、専用URLと4桁のPINコードが自動発行されます。そのURLを該当選手にシェアしてください。")
         
+        # --- CSV一括登録機能 ---
+        with st.expander("📁 CSVファイルからの一括登録", expanded=False):
+            st.markdown("縦に名前だけが並んだCSVファイルをアップロードすると、現在の**「空き枠」**に上から順番に追加されます。<br>※既に登録されている選手は消えません。", unsafe_allow_html=True)
+            uploaded_file = st.file_uploader("名前リスト(CSV)を選択", type=["csv"])
+            if uploaded_file is not None:
+                try:
+                    upload_df = pd.read_csv(uploaded_file, header=None)
+                    # 1列目のデータ（名前）をリスト化し、空白を除去
+                    new_names = [str(name).strip() for name in upload_df[0].tolist() if str(name).strip() != ""]
+                    
+                    if st.button("一括登録を実行", type="primary"):
+                        with st.spinner("一括登録処理中..."):
+                            current_df = df_players.copy()
+                            inactive_slots = current_df[current_df["IsActive"] == False].sort_values("SlotID")
+                            
+                            if len(inactive_slots) < len(new_names):
+                                st.error(f"空き枠が足りません（残り{len(inactive_slots)}枠 / 登録数{len(new_names)}名）。不要な枠を初期化してから再度お試しください。")
+                            else:
+                                new_df = current_df.copy()
+                                added_count = 0
+                                
+                                # 空き枠に順番に名前を割り当てる
+                                for idx, name in enumerate(new_names):
+                                    target_slot_id = inactive_slots.iloc[idx]["SlotID"]
+                                    
+                                    new_df.loc[new_df["SlotID"] == target_slot_id, "Name"] = name
+                                    new_df.loc[new_df["SlotID"] == target_slot_id, "IsActive"] = True
+                                    new_df.loc[new_df["SlotID"] == target_slot_id, "Token"] = generate_random_string()
+                                    new_df.loc[new_df["SlotID"] == target_slot_id, "PIN"] = generate_pin()
+                                    added_count += 1
+                                    
+                                if added_count > 0:
+                                    apply_player_updates_and_pack(df_players, new_df)
+                                    st.session_state['update_counter'] = st.session_state.get('update_counter', 0) + 1
+                                    st.success(f"✅ {added_count}名の選手を一括登録し、スロットを整理しました！")
+                                    st.rerun()
+                                    
+                except Exception as e:
+                    st.error(f"CSVファイルの読み込みに失敗しました。1列だけのシンプルなテキストファイルか確認してください。\n詳細: {e}")
+        
         display_df = df_players.copy()
         
         # IsActiveを確実にbool型にする処理（Googleスプレッドシートの中身によって型ブレするため）
