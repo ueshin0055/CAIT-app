@@ -1,6 +1,4 @@
 import streamlit as st
-from streamlit_gsheets import GSheetsConnection
-import pandas as pd
 from datetime import date
 
 # ページ設定
@@ -301,6 +299,10 @@ def input_page():
                 )
                 result_text = calculate_result(total_score)
                 
+                # アプリ起動を軽くするため、保存処理の時だけ重いライブラリを読み込む（Lazy Loading）
+                import pandas as pd
+                from streamlit_gsheets import GSheetsConnection
+                
                 # スプレッドシートへ保存するデータ
                 new_data = pd.DataFrame([{
                     "記録日時": date.today().strftime("%Y-%m-%d"),
@@ -378,6 +380,10 @@ def admin_page():
     # 認証後、区切り線からメインコンテンツを開始
     st.markdown("---")
     try:
+        # 管理画面を開いた時だけ重いライブラリを読み込む（アプリ起動の高速化）
+        import pandas as pd
+        from streamlit_gsheets import GSheetsConnection
+        
         conn = st.connection("gsheets", type=GSheetsConnection)
         df = conn.read(worksheet="シート1", ttl=0)
         
