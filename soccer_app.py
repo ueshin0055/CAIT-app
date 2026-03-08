@@ -11,7 +11,11 @@ from streamlit_gsheets import GSheetsConnection
 # ==========================================
 APP_TITLE = "サッカーチーム 選手データ管理"
 MAX_SLOTS = 50
-ADMIN_PASSWORD = "admin" # デフォルトパスワード（実運用時に変更）
+
+try:
+    ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
+except Exception:
+    ADMIN_PASSWORD = "admin" # デフォルトパスワード（実運用時に変更）
 
 st.set_page_config(
     page_title=APP_TITLE,
