@@ -8,3 +8,4 @@ conversations/
 *.resolved*
 installation_id
 mcp_config.json
+.streamlit/secrets.toml
