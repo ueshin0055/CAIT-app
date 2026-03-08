@@ -334,6 +334,7 @@ def admin_page():
         display_df["SlotID"] = display_df["SlotID"].apply(lambda x: int(float(x)) if pd.notna(x) and str(x).replace('.','',1).isdigit() else x)
         
         st.markdown("**(直接セルを選択して選手名を入力・変更できます)**")
+        editor_key = f"slot_editor_{st.session_state.get('update_counter', 0)}"
         edited_df = st.data_editor(
             display_df[["SlotID", "Name", "IsActive", "PIN", "Token"]],
             column_config={
@@ -346,7 +347,7 @@ def admin_page():
             hide_index=True,
             use_container_width=True,
             num_rows="fixed",
-            key="slot_editor"
+            key=editor_key
         )
         
         if st.button("💾 名簿の変更を保存してURLを発行", type="primary"):
@@ -377,6 +378,7 @@ def admin_page():
                 
                 if updated_count > 0:
                     apply_player_updates_and_pack(df_players, new_df)
+                    st.session_state['update_counter'] = st.session_state.get('update_counter', 0) + 1
                     st.success(f"✅ {updated_count}件の枠を更新整理しました（空き枠があれば上に詰められます）。")
                     st.rerun()
                 else:
@@ -513,6 +515,7 @@ def admin_page():
                 
                 with st.spinner("初期化し、空いた番号を詰めています..."):
                     apply_player_updates_and_pack(df_players, new_df)
+                st.session_state['update_counter'] = st.session_state.get('update_counter', 0) + 1
                 st.success(f"スロット {slot_id_to_reset} を初期化し、番号を詰めました。")
                 st.rerun()
 
